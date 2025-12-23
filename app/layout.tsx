@@ -10,11 +10,13 @@ export async function generateMetadata(): Promise<Metadata> {
     title: minikitConfig.miniapp.name,
     description: minikitConfig.miniapp.description,
     other: {
+      // Aapka App ID yahan add kar diya hai taaki verification ho sake
+      "base:app_id": "694ad42ec63ad876c9081083", 
       "fc:frame": JSON.stringify({
         version: minikitConfig.miniapp.version,
         imageUrl: minikitConfig.miniapp.heroImageUrl,
         button: {
-          title: `Join the ${minikitConfig.miniapp.name} Waitlist`,
+          title: `Launch ${minikitConfig.miniapp.name}`,
           action: {
             name: `Launch ${minikitConfig.miniapp.name}`,
             type: "launch_frame",
