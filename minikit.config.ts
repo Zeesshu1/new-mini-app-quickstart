@@ -15,7 +15,7 @@ export const minikitConfig = {
   },
   miniapp: {
     version: "1",
-    name: "Cubey", 
+    name: "TicTacToe", 
     subtitle: "Your AI Ad Companion", 
     description: "Ads",
     screenshotUrls: [`${ROOT_URL}/screenshot-portrait.png`],
