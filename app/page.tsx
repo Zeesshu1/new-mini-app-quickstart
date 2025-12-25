@@ -9,27 +9,42 @@ export default function TicTacToe() {
   const [isLoading, setIsLoading] = useState(false);
 
   // --- CONFIGURATION ---
-  const OWNER_WALLET = "0x9D3976c25f4DEFe584ed80bae5a7CeF59ba07aA5" as `0x${string}`; 
+  const OWNER_WALLET = "0x9D3976c25f4DEFe584ed80bae5a7CeF59ba07aA5"; 
   const MOVE_FEE = "0.00001"; 
 
   useEffect(() => {
     MiniKit.install();
   }, []);
 
-  async function connectWallet() {
+  const connectWallet = async () => {
     try {
       const response = await MiniKit.commands.connect();
       if (response && response.address) {
         setAddress(response.address);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Connection failed", error);
     }
-  }
+  };
+
+  const calculateWinner = (squares: (string | null)[]) => {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    return null;
+  };
 
   const winner = calculateWinner(board);
 
-  async function handleClick(i: number) {
+  const handleClick = async (i: number) => {
     if (winner || board[i] || isLoading) return;
 
     setIsLoading(true);
@@ -37,7 +52,7 @@ export default function TicTacToe() {
       const tx = await MiniKit.commands.sendTransaction({
         transactions: [
           {
-            to: OWNER_WALLET,
+            to: OWNER_WALLET as `0x${string}`,
             value: (parseFloat(MOVE_FEE) * 1e18).toString(),
             data: "0x", 
           },
@@ -50,18 +65,17 @@ export default function TicTacToe() {
         setBoard(nextBoard);
         setXIsNext(!xIsNext);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Transaction failed", error);
-      alert("Payment failed or rejected.");
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
-  function resetGame() {
+  const resetGame = () => {
     setBoard(Array(9).fill(null));
     setXIsNext(true);
-  }
+  };
 
   const isDraw = !winner && board.every((square) => square !== null);
   const status = winner ? `Winner: ${winner}` : isDraw ? "It's a Draw!" : `Next: ${xIsNext ? "X" : "O"}`;
@@ -69,7 +83,7 @@ export default function TicTacToe() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[90vh] text-white p-4 font-sans bg-black">
       <div className="absolute top-4 right-4">
-        <button onClick={connectWallet} className="bg-slate-900 border border-blue-500/40 px-4 py-2 rounded-xl text-sm font-bold">
+        <button onClick={connectWallet} className="bg-slate-900 border border-blue-500/40 px-4 py-2 rounded-xl text-sm font-bold active:scale-95">
           {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Connect Wallet"}
         </button>
       </div>
@@ -100,18 +114,9 @@ export default function TicTacToe() {
         ))}
       </div>
 
-      <button onClick={resetGame} className="mt-12 px-12 py-4 bg-white text-black font-black rounded-2xl transition-all active:scale-95">
+      <button onClick={resetGame} className="mt-12 px-12 py-4 bg-white text-black font-black rounded-2xl transition-all active:scale-95 shadow-xl">
         RESET BOARD
       </button>
     </div>
   );
-}
-
-function calculateWinner(squares: (string | null)[]) {
-  const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) return squares[a];
-  }
-  return null;
 }
