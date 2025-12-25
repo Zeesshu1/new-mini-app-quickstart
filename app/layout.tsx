@@ -5,12 +5,12 @@ import { minikitConfig } from "../minikit.config";
 import { RootProvider } from "./rootProvider";
 import "./globals.css";
 
+// Metadata server-side par hi rehna chahiye
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: minikitConfig.miniapp.name,
     description: minikitConfig.miniapp.description,
     other: {
-      // Aapka App ID yahan add kar diya hai taaki verification ho sake
       "base:app_id": "694ad42ec63ad876c9081083", 
       "fc:frame": JSON.stringify({
         version: minikitConfig.miniapp.version,
@@ -43,12 +43,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <RootProvider>
-      <html lang="en">
-        <body className={`${inter.variable} ${sourceCodePro.variable}`}>
-          <SafeArea>{children}</SafeArea>
-        </body>
-      </html>
-    </RootProvider>
+    <html lang="en">
+      <body className={`${inter.variable} ${sourceCodePro.variable} antialiased`}>
+        <RootProvider>
+          {/* SafeArea ensure karta hai ki content notch ya bottom bar ke peeche na chhupay */}
+          <SafeArea>
+            {children}
+          </SafeArea>
+        </RootProvider>
+      </body>
+    </html>
   );
 }
