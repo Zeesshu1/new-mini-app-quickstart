@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MiniKit } from '@coinbase/onchainkit/minikit';
 
 export default function TicTacToe() {
@@ -13,7 +13,9 @@ export default function TicTacToe() {
   const MOVE_FEE = "0.00001"; 
 
   useEffect(() => {
-    MiniKit.install();
+    if (typeof window !== 'undefined') {
+      MiniKit.install();
+    }
   }, []);
 
   const connectWallet = async () => {
@@ -22,12 +24,12 @@ export default function TicTacToe() {
       if (response && response.address) {
         setAddress(response.address);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Connection failed", error);
     }
   };
 
-  const calculateWinner = (squares: (string | null)[]) => {
+  const calculateWinner = useCallback((squares: (string | null)[]) => {
     const lines = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8],
       [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -40,7 +42,7 @@ export default function TicTacToe() {
       }
     }
     return null;
-  };
+  }, []);
 
   const winner = calculateWinner(board);
 
@@ -65,8 +67,9 @@ export default function TicTacToe() {
         setBoard(nextBoard);
         setXIsNext(!xIsNext);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Transaction failed", error);
+      alert("Payment failed or rejected.");
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +86,7 @@ export default function TicTacToe() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[90vh] text-white p-4 font-sans bg-black">
       <div className="absolute top-4 right-4">
-        <button onClick={connectWallet} className="bg-slate-900 border border-blue-500/40 px-4 py-2 rounded-xl text-sm font-bold active:scale-95">
+        <button onClick={connectWallet} className="bg-slate-900 border border-blue-500/40 px-4 py-2 rounded-xl text-sm font-bold">
           {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Connect Wallet"}
         </button>
       </div>
