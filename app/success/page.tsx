@@ -8,11 +8,9 @@ export default function TicTacToe() {
   const [address, setAddress] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // --- CONFIGURATION ---
   const OWNER_WALLET = "0x9D3976c25f4DEFe584ed80bae5a7CeF59ba07aA5"; 
   const MOVE_FEE = "0.00001"; 
 
-  // Safely access MiniKit to prevent build errors
   const MiniKit = (OnchainKitMinikit as any).MiniKit || (OnchainKitMinikit as any).default;
 
   useEffect(() => {
@@ -20,7 +18,7 @@ export default function TicTacToe() {
       try {
         MiniKit.install();
       } catch (e) {
-        console.error("MiniKit install error", e);
+        console.error("MiniKit installation failed:", e);
       }
     }
   }, [MiniKit]);
@@ -91,17 +89,17 @@ export default function TicTacToe() {
   const status = winner ? `Winner: ${winner}` : isDraw ? "Draw!" : `Next: ${xIsNext ? "X" : "O"}`;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[90vh] text-white p-4 font-sans bg-black">
+    <div className="flex flex-col items-center justify-center min-h-[90vh] text-white p-4 font-sans bg-black text-center">
       <div className="absolute top-4 right-4">
-        <button onClick={connectWallet} className="bg-slate-900 border border-blue-500/40 px-4 py-2 rounded-xl text-sm font-bold">
+        <button onClick={connectWallet} className="bg-slate-900 border border-blue-500/40 px-4 py-2 rounded-xl text-sm font-bold active:scale-95">
           {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Connect Wallet"}
         </button>
       </div>
 
-      <h1 className="text-3xl font-black mb-2 text-blue-500 italic tracking-tighter uppercase text-center">Base Tic-Tac-Toe</h1>
-      <p className="mb-8 text-slate-500 text-[10px] font-mono uppercase tracking-[0.3em] text-center">{MOVE_FEE} ETH / Move</p>
+      <h1 className="text-3xl font-black mb-2 text-blue-500 italic tracking-tighter uppercase">Base Tic-Tac-Toe</h1>
+      <p className="mb-8 text-slate-500 text-[10px] font-mono uppercase tracking-[0.3em]">{MOVE_FEE} ETH / Move</p>
       
-      <div className={`mb-8 text-lg font-bold px-10 py-3 rounded-2xl border transition-all text-center ${winner ? 'bg-green-500/20 border-green-500 text-green-400' : 'bg-slate-900/50 border-slate-800'}`}>
+      <div className={`mb-8 text-lg font-bold px-10 py-3 rounded-2xl border transition-all ${winner ? 'bg-green-500/20 border-green-500 text-green-400' : 'bg-slate-900/50 border-slate-800'}`}>
         {isLoading ? "Verifying..." : status}
       </div>
 
@@ -118,7 +116,7 @@ export default function TicTacToe() {
         ))}
       </div>
 
-      <button onClick={resetGame} className="mt-12 px-12 py-4 bg-white text-black font-black rounded-2xl active:scale-95 shadow-xl transition-all">RESET</button>
+      <button onClick={resetGame} className="mt-12 px-12 py-4 bg-white text-black font-black rounded-2xl active:scale-95 shadow-xl">RESET</button>
     </div>
   );
 }
