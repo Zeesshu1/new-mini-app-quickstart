@@ -1,9 +1,18 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { MiniKit } from '@coinbase/onchainkit/minikit';
 
 export default function TicTacToe() {
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState<boolean>(true);
+
+  // --- Base Mini App Initialization ---
+  useEffect(() => {
+    // Ye line Base Preview tool aur Coinbase Wallet ko signal deti hai ki app ready hai
+    MiniKit.install(); 
+    console.log("MiniKit Installed Successfully");
+  }, []);
+  // -------------------------------------
   
   const winner = calculateWinner(board);
 
